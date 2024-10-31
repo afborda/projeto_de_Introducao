@@ -1,11 +1,14 @@
 import { Text, View } from "react-native";
 import { styles } from "./styles";
+import { Itask } from "../../types/types";
+import { useState } from "react";
 
 type FeedBackProps = {
-  list: string[];
+  list: Itask[];
+  success: number;
 };
 
-export default function FeedBack({ list }: FeedBackProps) {
+export default function FeedBack({ list, success }: FeedBackProps) {
   return (
     <>
       <View style={styles.container}>
@@ -18,7 +21,7 @@ export default function FeedBack({ list }: FeedBackProps) {
         <View style={styles.containerTextPurple}>
           <Text style={styles.textPurple}>Concluidas</Text>
           <View style={styles.containerNumber}>
-            <Text style={styles.number}>0</Text>
+            <Text style={styles.number}>{success}</Text>
           </View>
         </View>
       </View>

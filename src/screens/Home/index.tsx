@@ -12,30 +12,53 @@ import FeedBack from "../../components/Feedback";
 import { styles } from "./styles";
 import Card from "../../components/Card";
 import { useState } from "react";
+import { Itask } from "../../types/types";
+import EmptyList from "../../components/EmptyList";
 
 export default function Home() {
-  const [isChecked, setChecked] = useState<boolean>(false);
-  const [listTask, setListTask] = useState<string[]>([]);
-  const [task, setTask] = useState<string>("");
+  const [listTask, setListTask] = useState<Itask[]>([]);
+  const [task, setTask] = useState("");
+  const [tasksCompleted, setTasksCompleted] = useState(0);
 
-  function handleTaskRemove(item: any) {
-    console.log("Removendo item", item);
-    const newList = listTask.filter((task) => task !== item);
-    setListTask(newList);
-  }
-
-  function handleTaskCheck(item: any) {
-    setChecked(!isChecked);
-    console.log(item);
+  function tasksCompletedSuccessfully(listTask: Itask[]) {
+    const tasksCompleted = listTask.filter((task) => task.completed === true);
+    setTasksCompleted(tasksCompleted.length);
   }
 
   function handleAddTask() {
     if (task === "") {
       return;
     }
-
-    setListTask([...listTask, task]);
+    const newTask = {
+      id: Math.random(),
+      title: task,
+      completed: false
+    };
+    setListTask([...listTask, newTask]);
     setTask("");
+  }
+
+  function handleTaskCheck(id: number) {
+    const newList = listTask.map((task) => {
+      if (task.id === id) {
+        return {
+          ...task,
+          completed: !task.completed
+        };
+      }
+      return task;
+    });
+    setListTask(newList);
+    tasksCompletedSuccessfully(newList);
+  }
+
+  function handleTaskRemove(item: Itask) {
+    console.log(item);
+
+    const newList = listTask.filter((task) => task.id !== item.id);
+    console.log(newList);
+
+    setListTask(newList);
   }
 
   return (
@@ -55,24 +78,20 @@ export default function Home() {
           </TouchableOpacity>
         </View>
 
-        <FeedBack list={listTask} />
-        {/* Inicio da lista  */}
+        <FeedBack list={listTask} success={tasksCompleted} />
 
         <FlatList
           showsVerticalScrollIndicator={false}
           data={listTask}
-          keyExtractor={(item) => item}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <Card
               task={item}
-              value={isChecked}
-              onValueChange={() => handleTaskCheck(item)}
+              onValueChange={() => handleTaskCheck(item.id)}
               onRemove={() => handleTaskRemove(item)}
             />
           )}
-          ListEmptyComponent={() => (
-            <Text style={styles.empty}>Nenhum p icipante cadastrado</Text>
-          )}
+          ListEmptyComponent={() => <EmptyList />}
         />
       </View>
     </>
