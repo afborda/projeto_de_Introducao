@@ -13,14 +13,14 @@ export const styles = StyleSheet.create({
     width: 56
   },
   emptyBold: {
-    color: "#fff",
+    color: "#808080",
     fontSize: 16,
     marginTop: 16,
     fontWeight: "bold",
     textAlign: "center"
   },
   empty: {
-    color: "#fff",
+    color: "#808080",
     fontSize: 16,
     marginTop: 16,
     textAlign: "center"
